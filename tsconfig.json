@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "outDir": "./built/",
+        "sourceMap": true,
+        "strict": true,
+        "module": "es2015",
+        "moduleResolution": "node",
+        "target": "es2017",
+        "experimentalDecorators": true,
+        "lib": [
+            "es2017",
+            "es2017.string",
+            "dom"
+        ],
+        "types": [
+            "babylonjs",
+            "babylonjs-materials"
+        ]
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
