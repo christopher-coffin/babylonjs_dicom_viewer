@@ -75,7 +75,7 @@ class MainScene {
     }
 
     private createDefaultEnvironment() {
-        if  (this.scene == null || this.scene.activeCamera == null)
+        if  (this.scene == null)
             return;
         var sphere = BABYLON.Mesh.CreateIcoSphere("sphere", {radius:0.2, flat:true, subdivisions: 1}, this.scene);
         sphere.position.y = 3;
