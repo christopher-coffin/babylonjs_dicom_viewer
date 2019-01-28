@@ -12,7 +12,7 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
                                     shaderMaterial: BABYLON.ShaderMaterial) {
     // tie in slider for exposure change, get it now or quit early
     let slide : HTMLInputElement = <HTMLInputElement>document.getElementById('myRange');
-    if (slide === null) {
+    if (slide == null) {
         console.log("Error: unable to find range");
         return;
     }
@@ -21,7 +21,7 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
     for (let i = 0; i < 100; i++) {
         var plane = BABYLON.Mesh.CreatePlane("plane", 0.5, scene);
         plane.position = new BABYLON.Vector3(2.0, 1, i*0.05);
-        let srcTex = new BABYLON.Texture("./sample1/"+pad(i, 8)+".png", scene);
+        let srcTex = new BABYLON.Texture("./sample_data/"+pad(i, 8)+".png", scene);
         let mc : BABYLON.ShaderMaterial = shaderMaterial.clone(`planeShader{{i}}`);
         mc.setTexture("textureSampler", srcTex);
         mc.setFloat("exposure", 1.0);
@@ -75,7 +75,7 @@ class MainScene {
     }
 
     private createDefaultEnvironment() {
-        if  (this.scene === null || this.scene.activeCamera === null)
+        if  (this.scene == null || this.scene.activeCamera == null)
             return;
         var sphere = BABYLON.Mesh.CreateIcoSphere("sphere", {radius:0.2, flat:true, subdivisions: 1}, this.scene);
         sphere.position.y = 3;
@@ -87,7 +87,7 @@ class MainScene {
 
         // Default Environment
         let environment = this.scene.createDefaultEnvironment({ enableGroundShadow: true, groundYBias: 1 });
-        if (environment === null)
+        if (environment == null)
             return;
         environment.setMainColor(BABYLON.Color3.FromHexString("#74b9ff"))        
         // Shadows
