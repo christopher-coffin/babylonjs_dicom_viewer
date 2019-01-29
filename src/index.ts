@@ -6,7 +6,7 @@ let v = new Vue({
     template: `
     <div>
         <babylon-world/>
-        </div>
+    </div>
     `,
     data: { },
     components: {

@@ -2,6 +2,7 @@
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-materials';
 
+
 let pad = function (num:number, size:number): string {
     let s = num+"";
     while (s.length < size) s = "0" + s;
@@ -9,6 +10,7 @@ let pad = function (num:number, size:number): string {
 }
 
 let addTexturedPlanes = function(scene: BABYLON.Scene, 
+                                    jsScope: any,
                                     shaderMaterial: BABYLON.ShaderMaterial) : BABYLON.TransformNode {
     let commonParent : BABYLON.TransformNode = new BABYLON.TransformNode("dicomCommonParent");
     // tie in slider for exposure change, get it now or quit early
@@ -33,11 +35,11 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
         plane.setParent(commonParent);
     }
     // setup the slide to 
-    slide.onchange = () => {
+    jsScope.$watch('fps', function (newValue: number) {
         for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("exposure", Number(slide.value)/50.0);
+            shaderMatList[i].setFloat("exposure", Number(newValue)/50.0);
         }
-    };
+    });
     commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1, 0));
     return commonParent;
 }
@@ -115,7 +117,7 @@ class MainScene {
         shadowGenerator.addShadowCaster(sphere, true);        
     }
 
-    public start() {
+    public start(jsScope: any) {
         console.log("data", this.canvas, this.scene);
         this.canvas.focus();
         // Playground needs to return at least an empty scene and default camera
@@ -141,7 +143,7 @@ class MainScene {
         });   
     
         this.scene.executeWhenReady(() => {
-            let planeHolder : BABYLON.TransformNode = addTexturedPlanes(this.scene, addTextureShaderMaterial(this.scene));
+            let planeHolder : BABYLON.TransformNode = addTexturedPlanes(this.scene, jsScope, addTextureShaderMaterial(this.scene));
             //camera.setTarget(planeHolder);
         });
     
@@ -149,9 +151,10 @@ class MainScene {
 }
 
 export class Startup {
-    public static main(): number {
+    public static main(js_scope: any): number {
+        console.log("scope passed in", js_scope);
         let scene = new MainScene();
-        scene.start();
+        scene.start(js_scope);
         console.log('Hello World');
         return 0;
     }

@@ -23,7 +23,12 @@ export default {
     };
   },
   mounted() {
-    Startup.main();
+    Startup.main(this);
+  },
+  watch: {
+    fps: function (event) {
+      console.log('fps update', event);
+    }
   }
 }
 </script>
