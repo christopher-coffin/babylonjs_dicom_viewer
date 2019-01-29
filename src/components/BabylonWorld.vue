@@ -1,7 +1,33 @@
 <template>
   <div class="babylon-container">
     <h3>{{ msg }}</h3>
-    <input v-model="fps" id= "myRange" type="range" min="1" max="100" class="slider"> {{ fps }}
+    <table>
+      <tr> 
+        <td> Red Threshold </td> 
+        <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="1" max="100" class="slider"> </td>
+        <td> {{ rThreshold }} </td>
+      </tr>
+      <tr> 
+        <td> Green Threshold </td>
+        <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="1" max="100" class="slider">  </td>
+        <td> {{ gThreshold }} </td> 
+      </tr>
+      <tr> 
+        <td> Blue Threshold </td>
+        <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="1" max="100" class="slider">  </td>
+        <td> {{ bThreshold }} </td> 
+      </tr>
+      <tr> 
+        <td> White Min Threshold </td>
+        <td> <input v-model="wMinThreshold" id= "slider_wMinThreshold" type="range" min="1" max="100" class="slider"> </td>
+        <td> {{ wMinThreshold }} </td> 
+      </tr>
+      <tr> 
+        <td> White Max Threshold </td>
+        <td> <input v-model="wMaxThreshold" id= "slider_wMaxThreshold" type="range" min="1" max="100" class="slider"> </td>
+        <td> {{ wMaxThreshold }} </td> 
+      </tr>
+    </table>
     <canvas id="renderCanvas"></canvas>
   </div>
 </template>
@@ -19,6 +45,11 @@ export default {
   data: () => {
     return {
       fps: 49,
+      rThreshold: 49,
+      gThreshold: 49,
+      bThreshold: 49,
+      wMinThreshold: 49,
+      wMaxThreshold: 80,
       mode: "debug",
     };
   },
@@ -35,6 +66,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.lineitem {
+  white-space: nowrap,
+}
+
 h3 {
   margin: 40px 0 0;
   font-weight: 100;
@@ -54,6 +90,7 @@ h3 {
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds [≈ Blink of an eye] transition on hover */
   transition: opacity .2s;
+  display: inline-block;
 }
 
 /* Mouse-over effects */

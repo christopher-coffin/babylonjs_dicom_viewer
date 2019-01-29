@@ -13,12 +13,6 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
                                     jsScope: any,
                                     shaderMaterial: BABYLON.ShaderMaterial) : BABYLON.TransformNode {
     let commonParent : BABYLON.TransformNode = new BABYLON.TransformNode("dicomCommonParent");
-    // tie in slider for exposure change, get it now or quit early
-    let slide : HTMLInputElement = <HTMLInputElement>document.getElementById('myRange');
-    if (slide == null) {
-        console.log("Error: unable to find range");
-        return commonParent;
-    }
     let shaderMatList : BABYLON.ShaderMaterial[] = [];
     // load in the list of images
     for (let i = 0; i < 100; i++) {
@@ -34,10 +28,15 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
         plane.hasVertexAlpha = true;
         plane.setParent(commonParent);
     }
-    // setup the slide to 
-    jsScope.$watch('fps', function (newValue: number) {
+    // setup the slide to watch the min max thresholds for white
+    jsScope.$watch('wMinThreshold', function (newValue: number) {
         for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("exposure", Number(newValue)/50.0);
+            shaderMatList[i].setFloat("wMinThreshold", Number(newValue)/50.0);
+        }
+    });
+    jsScope.$watch('wMaxThreshold', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/50.0);
         }
     });
     commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1, 0));
@@ -48,7 +47,8 @@ let addTextureShaderMaterial = function (scene : BABYLON.Scene) : BABYLON.Shader
     let shaderMaterial : BABYLON.ShaderMaterial = new BABYLON.ShaderMaterial("shader", scene, "./shaders/exposure_shader",
     {
         attributes: ["position", "normal", "uv"],
-        uniforms: ["world", "worldView", "worldViewProjection", "view", "textureSampler", "exposure" ]
+        uniforms: ["world", "worldView", "worldViewProjection", "view", 
+                    "textureSampler", "wMinThreshold", "wMaxThreshold" ]
     });
     shaderMaterial.setFloat("exposure", 0.5);
     shaderMaterial.needAlphaBlending();// = true;
