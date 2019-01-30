@@ -17,11 +17,14 @@
   },
   "license": "GPL",
   "dependencies": {
+    "@types/chart.js": "^2.7.42",
     "babylonjs": "^4.0.0-alpha.4",
     "babylonjs-gui": "^3.3.0",
     "babylonjs-materials": "^3.3.0",
+    "chart.js": "^2.7.3",
     "typescript": "^3.2.4",
     "vue": "^2.5.2",
+    "vue-chartjs": "^3.4.0",
     "vue-class-component": "^6.3.2",
     "vue-property-decorator": "^6.1.0",
     "vue-router": "^3.0.1"

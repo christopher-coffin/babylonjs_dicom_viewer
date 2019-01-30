@@ -1,34 +1,39 @@
 <template>
   <div class="babylon-container">
     <h3>{{ msg }}</h3>
-    <table>
-      <tr> 
-        <td> Red Threshold </td> 
-        <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="1" max="100" class="slider"> </td>
-        <td> {{ rThreshold }} </td>
-      </tr>
-      <tr> 
-        <td> Green Threshold </td>
-        <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="1" max="100" class="slider">  </td>
-        <td> {{ gThreshold }} </td> 
-      </tr>
-      <tr> 
-        <td> Blue Threshold </td>
-        <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="1" max="100" class="slider">  </td>
-        <td> {{ bThreshold }} </td> 
-      </tr>
-      <tr> 
-        <td> White Min Threshold </td>
-        <td> <input v-model="wMinThreshold" id= "slider_wMinThreshold" type="range" min="1" max="100" class="slider"> </td>
-        <td> {{ wMinThreshold }} </td> 
-      </tr>
-      <tr> 
-        <td> White Max Threshold </td>
-        <td> <input v-model="wMaxThreshold" id= "slider_wMaxThreshold" type="range" min="1" max="100" class="slider"> </td>
-        <td> {{ wMaxThreshold }} </td> 
-      </tr>
-    </table>
-    <canvas id="renderCanvas"></canvas>
+    <div class="linewrapper">
+      <table class="lineitem">
+        <tr> 
+          <td> Red Threshold </td> 
+          <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> {{ rThreshold }} </td>
+        </tr>
+        <tr> 
+          <td> Green Threshold </td>
+          <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="1" max="100" class="slider">  </td>
+          <td> {{ gThreshold }} </td> 
+        </tr>
+        <tr> 
+          <td> Blue Threshold </td>
+          <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="1" max="100" class="slider">  </td>
+          <td> {{ bThreshold }} </td> 
+        </tr>
+        <tr> 
+          <td> White Min Threshold </td>
+          <td> <input v-model="wMinThreshold" id= "slider_wMinThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> {{ wMinThreshold }} </td> 
+        </tr>
+        <tr> 
+          <td> White Max Threshold </td>
+          <td> <input v-model="wMaxThreshold" id= "slider_wMaxThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> {{ wMaxThreshold }} </td> 
+        </tr>
+      </table>
+      <div class="lineitem">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <canvas id="renderCanvas" class="lineitem"></canvas>
   </div>
 </template>
 
@@ -67,8 +72,13 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.linewrapper {
+   white-space: nowrap;
+   overflow-x: auto
+}
+
 .lineitem {
-  white-space: nowrap,
+  display: inline-block;
 }
 
 h3 {
