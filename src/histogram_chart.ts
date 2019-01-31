@@ -27,35 +27,33 @@ let addingChart = function () {
     });
 }
 
-let addingLineChart = function () {
-    let canvas : HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('myChart');
-    if (!canvas)
-        return
-    let ctx : CanvasRenderingContext2D = <CanvasRenderingContext2D>canvas.getContext('2d');
-    var chart = new chartjs.Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-    
-        // The data for our dataset
-        data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [{
-                label: "My First dataset",
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45],
-            }]
-        },
-    
-        // Configuration options go here
-        options: {}
-    });    
-}
 
+export class LineChart {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+        this.canvas = canvas;
+        this.ctx = ctx;
+    }
 
-export class Startup {
-    public static main(js_scope: any): number {
-        addingLineChart();
-        return 0;
+    public addingLineChart() {
+        var chart = new chartjs.Chart(this.ctx, {
+            // The type of chart we want to create
+            type: 'line',
+        
+            // The data for our dataset
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                datasets: [{
+                    label: "My First dataset",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45],
+                }]
+            },
+        
+            // Configuration options go here
+            options: {}
+        });    
     }
 }

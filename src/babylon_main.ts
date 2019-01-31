@@ -9,16 +9,36 @@ let pad = function (num:number, size:number): string {
     return s;
 }
 
+let getImageHistogram = function (srcTex : BABYLON.Texture) {
+    let buffer = new Uint8Array(4*512*512);
+    let b2 : Uint8Array = <Uint8Array>srcTex.readPixels();
+    //console.log('got it', b2);
+    let hist = Array(256).fill(0);
+    // now go through b2 and get the sum of the values for each color filling an array of 0-255
+    if (b2 !== null) {
+        for (let i = 0; i < b2.length; i+=4) {
+            hist[b2[i]]++;
+        }
+    }
+    //console.log(hist);
+    return hist;
+}
+
 let addTexturedPlanes = function(scene: BABYLON.Scene, 
                                     jsScope: any,
-                                    shaderMaterial: BABYLON.ShaderMaterial) : BABYLON.TransformNode {
+                                    shaderMaterial: BABYLON.ShaderMaterial,
+                                    callback: Function,
+                                    callbackObj : MainScene) : BABYLON.TransformNode {
     let commonParent : BABYLON.TransformNode = new BABYLON.TransformNode("dicomCommonParent");
     let shaderMatList : BABYLON.ShaderMaterial[] = [];
     // load in the list of images
     for (let i = 0; i < 100; i++) {
         var plane = BABYLON.Mesh.CreatePlane("plane", 1.0, scene);
         plane.position = new BABYLON.Vector3(0, 0, i*0.01);
-        let srcTex = new BABYLON.Texture("./sample_data/"+pad(i, 8)+".png", scene);
+        let srcTex = new BABYLON.Texture("./sample_data/"+pad(i, 8)+".png", scene, 
+                                        undefined, undefined, undefined, function() {
+                                            callback(callbackObj, srcTex);
+                                        });
         let mc : BABYLON.ShaderMaterial = shaderMaterial.clone(`planeShader{{i}}`);
         mc.setTexture("textureSampler", srcTex);
         mc.setFloat("exposure", 1.0);
@@ -87,12 +107,25 @@ class MainScene {
     canvas: HTMLCanvasElement;
     engine: BABYLON.Engine;
     scene: BABYLON.Scene;
+    hist_sum: Array<number>;
+    hist_sample_count: number;
 
     constructor() {
         this.canvas = <HTMLCanvasElement>document.getElementById("renderCanvas");
         this.engine = new BABYLON.Engine(this.canvas, true, { preserveDrawingBuffer: true, stencil: true });
         this.scene = new BABYLON.Scene(this.engine);
+        this.hist_sum = Array(256).fill(0);
+        this.hist_sample_count = 0;
     }
+
+    public updateHistSum(srcTex : BABYLON.Texture) {
+        let image_hist : Array<number> = getImageHistogram(srcTex)
+        for (let i = 0; i < 256; i++) {
+            this.hist_sum[i] = (this.hist_sample_count + image_hist[i]*this.hist_sample_count)/(this.hist_sample_count+1);
+            this.hist_sample_count++;
+        }
+        console.log("hist", this.hist_sum);
+    };
 
     private createDefaultEnvironment() {
         if  (this.scene == null)
@@ -141,13 +174,21 @@ class MainScene {
         window.addEventListener("resize", () => {
             this.engine.resize();
         });   
-    
+
         this.scene.executeWhenReady(() => {
-            let planeHolder : BABYLON.TransformNode = addTexturedPlanes(this.scene, jsScope, addTextureShaderMaterial(this.scene));
+            let planeHolder : BABYLON.TransformNode = addTexturedPlanes(this.scene, 
+                                                                        jsScope, 
+                                                                        addTextureShaderMaterial(this.scene), 
+                                                                        staticUpdateHistSum,
+                                                                        this);
             //camera.setTarget(planeHolder);
         });
     
     }    
+};
+
+let staticUpdateHistSum = function(thisObj : MainScene, srcTex : BABYLON.Texture) {
+    thisObj.updateHistSum(srcTex);
 }
 
 export class Startup {
@@ -158,5 +199,5 @@ export class Startup {
         console.log('Hello World');
         return 0;
     }
-}
+};
 
