@@ -31,29 +31,34 @@ let addingChart = function () {
 export class LineChart {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    chart: Chart;
+
     constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
         this.canvas = canvas;
         this.ctx = ctx;
-    }
-
-    public addingLineChart() {
-        var chart = new chartjs.Chart(this.ctx, {
+        this.chart = new chartjs.Chart(this.ctx, {
             // The type of chart we want to create
             type: 'line',
         
             // The data for our dataset
             data: {
-                labels: ["January", "February", "March", "April", "May", "June", "July"],
+                labels: Array(256).fill(''),
                 datasets: [{
-                    label: "My First dataset",
+                    label: "Intesity histogram",
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 2, 20, 30, 45],
                 }]
             },
         
             // Configuration options go here
             options: {}
-        });    
+        });
+    }
+
+    public setData(data: number[]){
+        if (this.chart && this.chart.data.datasets && this.chart.data.datasets.length > 0) {
+            this.chart.data.datasets[0].data = data;
+            this.chart.update();
+        }
     }
 }

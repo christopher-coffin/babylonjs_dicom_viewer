@@ -5,27 +5,31 @@
       <table class="lineitem">
         <tr> 
           <td> Red Threshold </td> 
-          <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="0" max="255" class="slider"> </td>
           <td> {{ rThreshold }} </td>
+          
+          <td> Y Clip </td> 
+          <td> <input v-model="yClip" id= "slider_yClip" type="range" min="-100" max="100" class="slider"> </td>
+          <td> {{ yClip }} </td>
         </tr>
         <tr> 
           <td> Green Threshold </td>
-          <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="1" max="100" class="slider">  </td>
+          <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="0" max="255" class="slider">  </td>
           <td> {{ gThreshold }} </td> 
         </tr>
         <tr> 
           <td> Blue Threshold </td>
-          <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="1" max="100" class="slider">  </td>
+          <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="0" max="255" class="slider">  </td>
           <td> {{ bThreshold }} </td> 
         </tr>
         <tr> 
           <td> White Min Threshold </td>
-          <td> <input v-model="wMinThreshold" id= "slider_wMinThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> <input v-model="wMinThreshold" id= "slider_wMinThreshold" type="range" min="0" max="255" class="slider"> </td>
           <td> {{ wMinThreshold }} </td> 
         </tr>
         <tr> 
           <td> White Max Threshold </td>
-          <td> <input v-model="wMaxThreshold" id= "slider_wMaxThreshold" type="range" min="1" max="100" class="slider"> </td>
+          <td> <input v-model="wMaxThreshold" id= "slider_wMaxThreshold" type="range" min="0" max="255" class="slider"> </td>
           <td> {{ wMaxThreshold }} </td> 
         </tr>
       </table>
@@ -34,27 +38,34 @@
       </div>
     </div>
     <canvas id="renderCanvas" class="lineitem"></canvas>
+    <histogram-chart></histogram-chart>
   </div>
 </template>
 
 
 <script type = "text/typescript">
 
+import HistogramChart from "./HistogramChart.vue";
+
 import { Startup } from "../babylon_main.ts";
 
 export default {
   name: 'BabylonWorld',
+  components: {
+    'histogram-chart': HistogramChart,
+  },
   props: {
     msg: String,
   }, 
   data: () => {
     return {
       fps: 49,
+      yClip: 100,
       rThreshold: 49,
       gThreshold: 49,
       bThreshold: 49,
-      wMinThreshold: 49,
-      wMaxThreshold: 80,
+      wMinThreshold: 0.0,
+      wMaxThreshold: 255.0,
       mode: "debug",
     };
   },
@@ -64,7 +75,7 @@ export default {
   watch: {
     fps: function (event) {
       console.log('fps update', event);
-    }
+    },
   }
 }
 </script>
