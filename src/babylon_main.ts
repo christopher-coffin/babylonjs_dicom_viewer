@@ -57,6 +57,7 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
         mc.setFloat("xClip", 1.0);
         mc.setFloat("yClip", 1.0);
         mc.setFloat("zClip", 1.0);
+        mc.setArray3("pOffset", [0, 1.2, 0]);
     }
     // setup the slide to watch the min max thresholds for white
     jsScope.$watch('wMinThreshold', function (newValue: number) {
@@ -84,7 +85,7 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
             shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
         }
     });
-    commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 0, 0));
+    commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1.2, 0));
     return commonParent;
 }
 
@@ -158,19 +159,15 @@ class MainScene {
     private createDefaultEnvironment() {
         if  (this.scene == null)
             return;
-        var sphere = BABYLON.Mesh.CreateIcoSphere("sphere", {radius:0.2, flat:true, subdivisions: 1}, this.scene);
-        sphere.position.y = 3;
-        sphere.material = new BABYLON.StandardMaterial("sphere material",this.scene)
-        // Lights and camera
-        let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(0, -0.5, 1.0), this.scene);
-        light.position = new BABYLON.Vector3(0, 5, -2);
-        //this.scene.activeCamera.beta += 0.8;
-
         // Default Environment
         let environment = this.scene.createDefaultEnvironment();//{ enableGroundShadow: true, groundYBias: 3 });
         if (environment == null)
             return;
-        environment.setMainColor(BABYLON.Color3.FromHexString("#74b9ff"))        
+        environment.setMainColor(BABYLON.Color3.FromHexString("#74b9ff")) 
+        // Lights and camera
+        let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(0, -0.5, 1.0), this.scene);
+        light.position = new BABYLON.Vector3(0, 5, -2);
+        //this.scene.activeCamera.beta += 0.8;
         // Shadows
         /*var shadowGenerator = new BABYLON.ShadowGenerator(1024, light);
         shadowGenerator.useBlurExponentialShadowMap = true;
@@ -213,7 +210,7 @@ class MainScene {
                                                                         staticUpdateHistSum,
                                                                         this);
             //camera.setTarget(planeHolder);
-            //this.scene.clipPlane = new BABYLON.Plane(0, 1, 0, -.5);
+            planeHolder.position = new BABYLON.Vector3(0, 1.2, 0);
         });
     
     }    
