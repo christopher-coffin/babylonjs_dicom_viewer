@@ -11,6 +11,9 @@
           <td> X Clip </td> 
           <td> <input v-model="xClip" id= "slider_xClip" type="range" min="-100" max="100" class="slider"> </td>
           <td> {{ xClip }} </td>
+
+          <td> Enable Color </td> 
+          <td> <input v-model="colorEnabled" id= "checkbox_colorEnabled" type="checkbox" min="-100" max="100"> </td>
         </tr>
         <tr> 
           <td> Green Threshold </td>
@@ -72,9 +75,10 @@ export default {
       xClip: 100,
       yClip: 100,
       zClip: 100,
-      rThreshold: 49,
-      gThreshold: 49,
-      bThreshold: 49,
+      colorEnabled: false,
+      rThreshold: 80.0,
+      gThreshold: 160.0,
+      bThreshold: 255.0,
       wMinThreshold: 0.0,
       wMaxThreshold: 255.0,
       mode: "debug",

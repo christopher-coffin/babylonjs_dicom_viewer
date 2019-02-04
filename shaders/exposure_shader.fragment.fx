@@ -8,6 +8,10 @@ uniform float wMaxThreshold;
 uniform float xClip;
 uniform float yClip;
 uniform float zClip;
+uniform float rThreshold;
+uniform float gThreshold;
+uniform float bThreshold;
+uniform float colorEnabled;
 uniform vec3 pOffset;
 
 void main()
@@ -21,5 +25,11 @@ void main()
         src.a = 0.0;
     if (vClipVertex.z/vClipVertex.w-pOffset.z > zClip)
         src.a = 0.0;
-    gl_FragColor.a = (src.r > wMinThreshold && src.r < wMaxThreshold) ? src.a*0.6 : 0.0;
+    if (intensity <= rThreshold)
+        gl_FragColor.rgb = vec3(intensity, 0,0);
+    else if (intensity > rThreshold && intensity <= gThreshold)
+        gl_FragColor.rgb = vec3(0, intensity, 0);
+    else
+        gl_FragColor.rgb = vec3(0, 0, intensity);
+    gl_FragColor.a = (intensity > wMinThreshold && intensity < wMaxThreshold) ? src.a*0.6 : 0.0;
 }

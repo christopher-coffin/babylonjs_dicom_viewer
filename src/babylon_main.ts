@@ -29,7 +29,8 @@ let addTextureShaderMaterial = function (scene : BABYLON.Scene) : BABYLON.Shader
     {
         attributes: ["position", "normal", "uv"],
         uniforms: ["world", "worldView", "worldViewProjection", "view", 
-                    "textureSampler", "wMinThreshold", "wMaxThreshold","xClip", "yClip", "zClip" ]
+                    "textureSampler", "wMinThreshold", "wMaxThreshold","xClip", "yClip", "zClip",
+                    "colorEnabled", "rThreshold", "gThreshold", "bThreshold" ]
     });
     shaderMaterial.needAlphaBlending();// = true;
     return shaderMaterial;
@@ -113,6 +114,10 @@ class MainScene {
         plane.setParent(commonParent);
         mc.setFloat("wMinThreshold", 0.0);
         mc.setFloat("wMaxThreshold", 255.0);
+        mc.setFloat("rThreshold", 80.0/255.0);
+        mc.setFloat("gThreshold", 160.0/255.0);
+        mc.setFloat("bThreshold", 1.0);
+        mc.setInt("colorEnabled", 0);
         mc.setFloat("xClip", 1.0);
         mc.setFloat("yClip", 1.0);
         mc.setFloat("zClip", 1.0);
@@ -126,29 +131,49 @@ class MainScene {
         }
         // setup the slide to watch the min max thresholds for white
         jsScope.$watch('wMinThreshold', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("wMinThreshold", Number(newValue)/255.0);
-        }
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("wMinThreshold", Number(newValue)/255.0);
+            }
         });
         jsScope.$watch('wMaxThreshold', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/255.0);
-        }
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/255.0);
+            }
         });
         jsScope.$watch('xClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("xClip", Number(newValue)/100.0);
-        }
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("xClip", Number(newValue)/100.0);
+            }
         });
         jsScope.$watch('yClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("yClip", Number(newValue)/100.0);
-        }
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("yClip", Number(newValue)/100.0);
+            }
         });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
         jsScope.$watch('zClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
-        }
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
+            }
+        });
+        jsScope.$watch('rThreshold', function (newValue: number) {
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("rThreshold", Number(newValue)/255.0);
+            }
+        });
+        jsScope.$watch('gThreshold', function (newValue: number) {
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("gThreshold", Number(newValue)/255.0);
+            }
+        });
+        jsScope.$watch('bThreshold', function (newValue: number) {
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setFloat("bThreshold", Number(newValue)/255.0);
+            }
+        });
+        jsScope.$watch('colorEnabled', function (newValue: boolean) {
+            for (let i = 0; i < shaderMatList.length; i++) {
+                shaderMatList[i].setInt("colorEnabled", newValue? 1: 0);
+            }
         });
         commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1.2, 0));
         return commonParent;
