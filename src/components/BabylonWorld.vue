@@ -7,20 +7,29 @@
           <td> Red Threshold </td> 
           <td> <input v-model="rThreshold" id= "slider_rThreshold" type="range" min="0" max="255" class="slider"> </td>
           <td> {{ rThreshold }} </td>
-          
-          <td> Y Clip </td> 
-          <td> <input v-model="yClip" id= "slider_yClip" type="range" min="-100" max="100" class="slider"> </td>
-          <td> {{ yClip }} </td>
+
+          <td> X Clip </td> 
+          <td> <input v-model="xClip" id= "slider_xClip" type="range" min="-100" max="100" class="slider"> </td>
+          <td> {{ xClip }} </td>
         </tr>
         <tr> 
           <td> Green Threshold </td>
           <td> <input v-model="gThreshold" id= "slider_gThreshold" type="range" min="0" max="255" class="slider">  </td>
           <td> {{ gThreshold }} </td> 
+
+          <td> Y Clip </td> 
+          <td> <input v-model="yClip" id= "slider_yClip" type="range" min="-100" max="100" class="slider"> </td>
+          <td> {{ yClip }} </td>
+
         </tr>
         <tr> 
           <td> Blue Threshold </td>
           <td> <input v-model="bThreshold" id= "slider_bThreshold" type="range" min="0" max="255" class="slider">  </td>
           <td> {{ bThreshold }} </td> 
+
+          <td> Z Clip </td> 
+          <td> <input v-model="zClip" id= "slider_zClip" type="range" min="-100" max="100" class="slider"> </td>
+          <td> {{ zClip }} </td>
         </tr>
         <tr> 
           <td> White Min Threshold </td>
@@ -60,7 +69,9 @@ export default {
   data: () => {
     return {
       fps: 49,
+      xClip: 100,
       yClip: 100,
+      zClip: 100,
       rThreshold: 49,
       gThreshold: 49,
       bThreshold: 49,

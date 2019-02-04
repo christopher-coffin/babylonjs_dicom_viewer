@@ -54,7 +54,9 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
         plane.setParent(commonParent);
         mc.setFloat("wMinThreshold", 0.0);
         mc.setFloat("wMaxThreshold", 255.0);
+        mc.setFloat("xClip", 1.0);
         mc.setFloat("yClip", 1.0);
+        mc.setFloat("zClip", 1.0);
     }
     // setup the slide to watch the min max thresholds for white
     jsScope.$watch('wMinThreshold', function (newValue: number) {
@@ -67,9 +69,19 @@ let addTexturedPlanes = function(scene: BABYLON.Scene,
             shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/255.0);
         }
     });
+    jsScope.$watch('xClip', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("xClip", Number(newValue)/100.0);
+        }
+    });
     jsScope.$watch('yClip', function (newValue: number) {
         for (let i = 0; i < shaderMatList.length; i++) {
             shaderMatList[i].setFloat("yClip", Number(newValue)/100.0);
+        }
+    });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    jsScope.$watch('zClip', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
         }
     });
     commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 0, 0));
@@ -81,7 +93,7 @@ let addTextureShaderMaterial = function (scene : BABYLON.Scene) : BABYLON.Shader
     {
         attributes: ["position", "normal", "uv"],
         uniforms: ["world", "worldView", "worldViewProjection", "view", 
-                    "textureSampler", "wMinThreshold", "wMaxThreshold","yClip" ]
+                    "textureSampler", "wMinThreshold", "wMaxThreshold","xClip", "yClip", "zClip" ]
     });
     shaderMaterial.needAlphaBlending();// = true;
     return shaderMaterial;
@@ -110,6 +122,7 @@ let addArcRotateCamera = function(scene : BABYLON.Scene, canvas : any) : BABYLON
     camera.keysRight.push(68); //S
     camera.speed = 0.5;
     camera.wheelPrecision = 60;
+    camera.minZ = 0.01;
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
     return camera;
