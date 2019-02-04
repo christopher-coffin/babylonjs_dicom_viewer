@@ -24,71 +24,6 @@ let getImageHistogram = function (srcTex : BABYLON.Texture) {
     return hist;
 }
 
-let addTexturedPlanes = function(scene: BABYLON.Scene, 
-                                    jsScope: any,
-                                    shaderMaterial: BABYLON.ShaderMaterial,
-                                    callback: Function,
-                                    callbackObj : MainScene) : BABYLON.TransformNode {
-    let commonParent : BABYLON.TransformNode = new BABYLON.TransformNode("dicomCommonParent");
-    let shaderMatList : BABYLON.ShaderMaterial[] = [];
-    // load in the list of images
-    let numberOfImages = 900;
-    let imageSpacing = 0.0025;
-    let pixelCount = 512.0;
-    let pixelSpacing = 0.001782;
-    for (let i = 0; i < numberOfImages; i++) {
-        var plane = BABYLON.Mesh.CreatePlane("plane", pixelCount*pixelSpacing, scene);
-        plane.position = new BABYLON.Vector3(0, 0, (i-(numberOfImages/2.0))*imageSpacing);
-        let srcTex = new BABYLON.Texture("./sample_data/fbt/"+pad(i, 3)+".png", scene, 
-                                        undefined, undefined, undefined, function() {
-                                            callback(callbackObj, srcTex);
-                                        });
-        let mc : BABYLON.ShaderMaterial = shaderMaterial.clone(`planeShader{{i}}`);
-        mc.setTexture("textureSampler", srcTex);
-        mc.setFloat("exposure", 1.0);
-        plane.material = mc;
-        shaderMatList.push(mc);
-        plane.material.backFaceCulling = false;
-        plane.hasVertexAlpha = true;
-        plane.material.disableDepthWrite = true;
-        plane.setParent(commonParent);
-        mc.setFloat("wMinThreshold", 0.0);
-        mc.setFloat("wMaxThreshold", 255.0);
-        mc.setFloat("xClip", 1.0);
-        mc.setFloat("yClip", 1.0);
-        mc.setFloat("zClip", 1.0);
-        mc.setArray3("pOffset", [0, 1.2, 0]);
-    }
-    // setup the slide to watch the min max thresholds for white
-    jsScope.$watch('wMinThreshold', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("wMinThreshold", Number(newValue)/255.0);
-        }
-    });
-    jsScope.$watch('wMaxThreshold', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/255.0);
-        }
-    });
-    jsScope.$watch('xClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("xClip", Number(newValue)/100.0);
-        }
-    });
-    jsScope.$watch('yClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("yClip", Number(newValue)/100.0);
-        }
-    });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-    jsScope.$watch('zClip', function (newValue: number) {
-        for (let i = 0; i < shaderMatList.length; i++) {
-            shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
-        }
-    });
-    commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1.2, 0));
-    return commonParent;
-}
-
 let addTextureShaderMaterial = function (scene : BABYLON.Scene) : BABYLON.ShaderMaterial {
     let shaderMaterial : BABYLON.ShaderMaterial = new BABYLON.ShaderMaterial("shader", scene, "./shaders/exposure_shader",
     {
@@ -124,6 +59,7 @@ let addArcRotateCamera = function(scene : BABYLON.Scene, canvas : any) : BABYLON
     camera.speed = 0.5;
     camera.wheelPrecision = 60;
     camera.minZ = 0.01;
+    camera.setTarget(new BABYLON.Vector3(0.0, 1.2, 0.0));
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
     return camera;
@@ -145,6 +81,77 @@ class MainScene {
         this.scene = new BABYLON.Scene(this.engine);
         this.hist_sum = Array(256).fill(0);
         this.hist_sample_count = 0;
+    }
+
+    private addTexturedPlanes(scene: BABYLON.Scene, 
+                            jsScope: any,
+                            shaderMaterial: BABYLON.ShaderMaterial,
+                            callback: Function,
+                            callbackObj : MainScene) : BABYLON.TransformNode {
+        let commonParent : BABYLON.TransformNode = new BABYLON.TransformNode("dicomCommonParent");
+        let shaderMatList : BABYLON.ShaderMaterial[] = [];
+        // load in the list of images
+        let numberOfImages = 900;
+        let imageSpacing = 0.0025;
+        let pixelCount = 512.0;
+        let pixelSpacing = 0.001782;
+        for (let i = 0; i < numberOfImages; i++) {
+        var plane = BABYLON.Mesh.CreatePlane("plane", pixelCount*pixelSpacing, scene);
+        plane.position = new BABYLON.Vector3(0, 0, (i-(numberOfImages/2.0))*imageSpacing);
+        let srcTex = new BABYLON.Texture("./sample_data/fbt/"+pad(i, 3)+".png", scene, 
+                    undefined, undefined, undefined, function() {
+                        callback(callbackObj, srcTex);
+                    });
+        let mc : BABYLON.ShaderMaterial = shaderMaterial.clone(`planeShader{{i}}`);
+        mc.setTexture("textureSampler", srcTex);
+        mc.setFloat("exposure", 1.0);
+        plane.material = mc;
+        shaderMatList.push(mc);
+        plane.material.backFaceCulling = false;
+        plane.hasVertexAlpha = true;
+        plane.material.disableDepthWrite = true;
+        plane.setParent(commonParent);
+        mc.setFloat("wMinThreshold", 0.0);
+        mc.setFloat("wMaxThreshold", 255.0);
+        mc.setFloat("xClip", 1.0);
+        mc.setFloat("yClip", 1.0);
+        mc.setFloat("zClip", 1.0);
+        mc.setArray3("pOffset", [0, 1.2, 0]);
+        plane.onBeforeRenderObservable.add(function () {
+            this.engine.setDepthFunction(this.engine._gl.ALWAYS);
+        }.bind(this));
+        plane.onAfterRenderObservable.add(function () {
+            this.engine.setDepthFunctionToLess();
+        }.bind(this));
+        }
+        // setup the slide to watch the min max thresholds for white
+        jsScope.$watch('wMinThreshold', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("wMinThreshold", Number(newValue)/255.0);
+        }
+        });
+        jsScope.$watch('wMaxThreshold', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("wMaxThreshold", Number(newValue)/255.0);
+        }
+        });
+        jsScope.$watch('xClip', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("xClip", Number(newValue)/100.0);
+        }
+        });
+        jsScope.$watch('yClip', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("yClip", Number(newValue)/100.0);
+        }
+        });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        jsScope.$watch('zClip', function (newValue: number) {
+        for (let i = 0; i < shaderMatList.length; i++) {
+            shaderMatList[i].setFloat("zClip", Number(newValue)/100.0);
+        }
+        });
+        commonParent.setAbsolutePosition(new BABYLON.Vector3(0, 1.2, 0));
+        return commonParent;
     }
 
     public updateHistSum(srcTex : BABYLON.Texture) {
@@ -204,7 +211,7 @@ class MainScene {
         defaultPipeline.samples = 4;
 
         this.scene.executeWhenReady(() => {
-            let planeHolder : BABYLON.TransformNode = addTexturedPlanes(this.scene, 
+            let planeHolder : BABYLON.TransformNode = this.addTexturedPlanes(this.scene, 
                                                                         jsScope, 
                                                                         addTextureShaderMaterial(this.scene), 
                                                                         staticUpdateHistSum,

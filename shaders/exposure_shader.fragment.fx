@@ -21,5 +21,5 @@ void main()
         src.a = 0.0;
     if (vClipVertex.z/vClipVertex.w-pOffset.z > zClip)
         src.a = 0.0;
-    gl_FragColor.a = (src.r > wMinThreshold && src.r < wMaxThreshold) ? src.a*0.2 : 0.0;
+    gl_FragColor.a = (src.r > wMinThreshold && src.r < wMaxThreshold) ? src.a*0.6 : 0.0;
 }
